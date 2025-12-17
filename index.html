@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Грант Победителя</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .trophy {
+            font-size: 80px;
+            margin-bottom: 10px;
+            animation: bounce 1s infinite;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+            color: #333;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-message.active {
+            display: block;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .success-message h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .success-message p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="trophy">🏆</div>
+            <h1>Поздравляем!</h1>
+            <p class="subtitle">Вы выиграли грант на развитие проекта</p>
+        </div>
+
+        <div class="card">
+            <form id="registrationForm">
+                <div class="info-box">
+                    <p><strong>💰 Сумма гранта:</strong> 500 000 ₽</p>
+                    <p style="margin-top: 5px;">Для получения гранта заполните регистрационную форму</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="fullName">Полное имя *</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Иванов Иван Иванович" required>
+                    <div class="error" id="fullNameError">Введите полное имя</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                    <div class="error" id="emailError">Введите корректный email</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Телефон *</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" required>
+                    <div class="error" id="phoneError">Введите номер телефона</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectName">Название проекта *</label>
+                    <input type="text" id="projectName" name="projectName" placeholder="Мой инновационный проект" required>
+                    <div class="error" id="projectNameError">Введите название проекта</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectDescription">Описание проекта *</label>
+                    <textarea id="projectDescription" name="projectDescription" placeholder="Расскажите о вашем проекте..." required></textarea>
+                    <div class="error" id="projectDescriptionError">Введите описание проекта</div>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    Зарегистрироваться и получить грант
+                </button>
+            </form>
+
+            <div class="success-message" id="successMessage">
+                <div class="success-icon">✅</div>
+                <h2>Регистрация успешна!</h2>
+                <p>Пароль для доступа отправлен в бот</p>
+                <p style="margin-top: 10px;">Проверьте сообщения от бота</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Telegram Web App
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+
+        // Применяем тему Telegram
+        document.body.style.background = tg.themeParams.bg_color || document.body.style.background;
+
+        const form = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+
+        // Генерация случайного пароля
+        function generatePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            let password = '';
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        // Валидация формы
+        function validateForm() {
+            let isValid = true;
+            const fields = ['fullName', 'email', 'phone', 'projectName', 'projectDescription'];
+            
+            fields.forEach(field => {
+                const input = document.getElementById(field);
+                const error = document.getElementById(field + 'Error');
+                
+                if (!input.value.trim()) {
+                    error.classList.add('active');
+                    isValid = false;
+                } else {
+                    error.classList.remove('active');
+                }
+            });
+
+            // Дополнительная валидация email
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email.value.trim() && !emailPattern.test(email.value)) {
+                emailError.textContent = 'Введите корректный email';
+                emailError.classList.add('active');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Обработка отправки формы
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Отправка...';
+
+            // Собираем данные формы
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                projectName: document.getElementById('projectName').value,
+                projectDescription: document.getElementById('projectDescription').value,
+                password: generatePassword(),
+                userId: tg.initDataUnsafe?.user?.id || 'unknown',
+                username: tg.initDataUnsafe?.user?.username || 'unknown',
+                firstName: tg.initDataUnsafe?.user?.first_name || '',
+                registeredAt: new Date().toISOString()
+            };
+
+            // Отправляем данные через Telegram Web App
+            tg.sendData(JSON.stringify(formData));
+
+            // Показываем сообщение об успехе
+            setTimeout(() => {
+                form.style.display = 'none';
+                successMessage.classList.add('active');
+                
+                // Через 3 секунды закрываем приложение
+                setTimeout(() => {
+                    tg.close();
+                }, 3000);
+            }, 500);
+        });
+
+        // Убираем ошибки при вводе
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', () => {
+                const error = document.getElementById(input.id + 'Error');
+                if (error) {
+                    error.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
